@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/auth/PasswordInput";
+import { PasswordStrength, SENHA_MIN } from "@/components/auth/PasswordStrength";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -86,7 +88,8 @@ function AuthPage() {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="senha">Senha</Label>
-            <Input id="senha" type="password" required minLength={6} value={senha} onChange={(e) => setSenha(e.target.value)} />
+            <PasswordInput id="senha" required minLength={SENHA_MIN} value={senha} onChange={(e) => setSenha(e.target.value)} />
+            {modo === "cadastrar" && <PasswordStrength senha={senha} />}
           </div>
           <Button type="submit" className="w-full" disabled={carregando}>
             {carregando ? "Aguarde..." : modo === "entrar" ? "Entrar" : "Cadastrar"}
