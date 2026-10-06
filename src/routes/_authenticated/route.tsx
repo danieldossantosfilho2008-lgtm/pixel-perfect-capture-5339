@@ -4,6 +4,10 @@ import { LogOut, Package } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { acessoQuery } from "@/lib/estoque";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription,
+  AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -52,9 +56,23 @@ function Layout() {
                 </div>
               </div>
             )}
-            <Button size="sm" variant="ghost" onClick={sair} className="hover:bg-sidebar-accent hover:text-sidebar-foreground">
-              <LogOut className="h-4 w-4" /> Sair
-            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button size="sm" variant="ghost" className="hover:bg-sidebar-accent hover:text-sidebar-foreground">
+                  <LogOut className="h-4 w-4" /> Sair
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Deseja realmente sair?</AlertDialogTitle>
+                  <AlertDialogDescription>Sua sessão será encerrada e você voltará à tela de entrada.</AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                  <AlertDialogAction onClick={sair}>Sair</AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
           </div>
         </div>
       </header>
