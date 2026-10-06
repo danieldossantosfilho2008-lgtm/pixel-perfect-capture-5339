@@ -226,7 +226,7 @@ function EstoquePage() {
             )}
             {visiveis.map((p) => {
               const s = situacao(p);
-              const especifico = p.atributos.variacao ?? p.atributos.dimensao ?? "—";
+              const especifico = p.atributos["variacao"] ?? p.atributos["dimensao"] ?? "—";
               return (
                 <tr key={p.id} className={cn("border-b last:border-0 hover:bg-muted/30", p.status === "inativo" && "text-muted-foreground")}>
                   <td className="px-3 py-2.5 font-medium">

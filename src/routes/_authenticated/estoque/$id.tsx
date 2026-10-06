@@ -59,8 +59,8 @@ function DetalhePage() {
     ["Tipo", p.tipo],
     ["Cor", p.cor],
     ...(p.categoria?.codigo === "tecido"
-      ? [["Variação", p.atributos.variacao ?? "—"] as [string, React.ReactNode]]
-      : [["Dimensão", p.atributos.dimensao ?? "—"] as [string, React.ReactNode]]),
+      ? [["Variação", p.atributos["variacao"] ?? "—"] as [string, React.ReactNode]]
+      : [["Dimensão", p.atributos["dimensao"] ?? "—"] as [string, React.ReactNode]]),
     ["Preço", fmtBRL(p.preco)],
     ["Estoque mínimo", `${fmtNum(p.estoque_min)} ${p.estoque_min != null ? un : ""}`],
     ["Estoque máximo", `${fmtNum(p.estoque_max)} ${p.estoque_max != null ? un : ""}`],

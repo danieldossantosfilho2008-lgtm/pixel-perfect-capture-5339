@@ -81,20 +81,20 @@ export function ProdutoFormDialog({ open, onOpenChange, produto }: Props) {
 
   function validar() {
     const e: Record<string, string> = {};
-    if (!f.categoria_id) e.categoria_id = "Selecione a categoria.";
-    if (!f.nome.trim()) e.nome = "Informe o nome.";
-    if (!f.tipo.trim()) e.tipo = "Informe o tipo.";
-    if (!f.cor.trim()) e.cor = "Informe a cor.";
+    if (!f.categoria_id) e["categoria_id"] = "Selecione a categoria.";
+    if (!f.nome.trim()) e["nome"] = "Informe o nome.";
+    if (!f.tipo.trim()) e["tipo"] = "Informe o tipo.";
+    if (!f.cor.trim()) e["cor"] = "Informe a cor.";
     const q = toNum(f.quantidade);
-    if (!edicao && (q == null || isNaN(q) || q < 0)) e.quantidade = "Quantidade não pode ser negativa.";
+    if (!edicao && (q == null || isNaN(q) || q < 0)) e["quantidade"] = "Quantidade não pode ser negativa.";
     const p = toNum(f.preco);
-    if (p == null || isNaN(p) || p < 0) e.preco = "Preço não pode ser negativo.";
+    if (p == null || isNaN(p) || p < 0) e["preco"] = "Preço não pode ser negativo.";
     const mn = toNum(f.estoque_min);
     const mx = toNum(f.estoque_max);
-    if (mn != null && (isNaN(mn) || mn < 0)) e.estoque_min = "Estoque mínimo não pode ser negativo.";
-    if (mx != null && (isNaN(mx) || mx < 0)) e.estoque_max = "Estoque máximo não pode ser negativo.";
-    if (mn != null && mx != null && !e.estoque_min && !e.estoque_max && mx < mn)
-      e.estoque_max = "Estoque máximo não pode ser menor que o mínimo.";
+    if (mn != null && (isNaN(mn) || mn < 0)) e["estoque_min"] = "Estoque mínimo não pode ser negativo.";
+    if (mx != null && (isNaN(mx) || mx < 0)) e["estoque_max"] = "Estoque máximo não pode ser negativo.";
+    if (mn != null && mx != null && !e["estoque_min"] && !e["estoque_max"] && mx < mn)
+      e["estoque_max"] = "Estoque máximo não pode ser menor que o mínimo.";
     cat?.atributos.forEach((a) => {
       if (a.obrigatorio && !attrs[a.atributo]?.trim()) e[`attr_${a.atributo}`] = `Informe ${a.rotulo.toLowerCase()}.`;
     });
@@ -157,7 +157,7 @@ export function ProdutoFormDialog({ open, onOpenChange, produto }: Props) {
           <div className="space-y-1.5 sm:col-span-2">
             <Label>Categoria *</Label>
             <Select value={f.categoria_id} onValueChange={(v) => setF((s) => ({ ...s, categoria_id: v }))}>
-              <SelectTrigger aria-invalid={!!erros.categoria_id}>
+              <SelectTrigger aria-invalid={!!erros["categoria_id"]}>
                 <SelectValue placeholder="Selecione a categoria" />
               </SelectTrigger>
               <SelectContent>
@@ -173,17 +173,17 @@ export function ProdutoFormDialog({ open, onOpenChange, produto }: Props) {
 
           <div className="space-y-1.5 sm:col-span-2">
             <Label htmlFor="nome">Nome *</Label>
-            <Input id="nome" value={f.nome} onChange={set("nome")} aria-invalid={!!erros.nome} />
+            <Input id="nome" value={f.nome} onChange={set("nome")} aria-invalid={!!erros["nome"]} />
             <Erro k="nome" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="tipo">Tipo *</Label>
-            <Input id="tipo" value={f.tipo} onChange={set("tipo")} aria-invalid={!!erros.tipo} />
+            <Input id="tipo" value={f.tipo} onChange={set("tipo")} aria-invalid={!!erros["tipo"]} />
             <Erro k="tipo" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="cor">Cor *</Label>
-            <Input id="cor" value={f.cor} onChange={set("cor")} aria-invalid={!!erros.cor} />
+            <Input id="cor" value={f.cor} onChange={set("cor")} aria-invalid={!!erros["cor"]} />
             <Erro k="cor" />
           </div>
 
@@ -211,24 +211,24 @@ export function ProdutoFormDialog({ open, onOpenChange, produto }: Props) {
               </>
             ) : (
               <>
-                <Input id="quantidade" type="number" min={0} step="any" value={f.quantidade} onChange={set("quantidade")} aria-invalid={!!erros.quantidade} />
+                <Input id="quantidade" type="number" min={0} step="any" value={f.quantidade} onChange={set("quantidade")} aria-invalid={!!erros["quantidade"]} />
                 <Erro k="quantidade" />
               </>
             )}
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="preco">Preço (R$)</Label>
-            <Input id="preco" type="number" min={0} step="0.01" value={f.preco} onChange={set("preco")} aria-invalid={!!erros.preco} />
+            <Input id="preco" type="number" min={0} step="0.01" value={f.preco} onChange={set("preco")} aria-invalid={!!erros["preco"]} />
             <Erro k="preco" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="min">Estoque mínimo <span className="text-muted-foreground">(opcional)</span></Label>
-            <Input id="min" type="number" min={0} step="any" value={f.estoque_min} onChange={set("estoque_min")} aria-invalid={!!erros.estoque_min} />
+            <Input id="min" type="number" min={0} step="any" value={f.estoque_min} onChange={set("estoque_min")} aria-invalid={!!erros["estoque_min"]} />
             <Erro k="estoque_min" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="max">Estoque máximo <span className="text-muted-foreground">(opcional)</span></Label>
-            <Input id="max" type="number" min={0} step="any" value={f.estoque_max} onChange={set("estoque_max")} aria-invalid={!!erros.estoque_max} />
+            <Input id="max" type="number" min={0} step="any" value={f.estoque_max} onChange={set("estoque_max")} aria-invalid={!!erros["estoque_max"]} />
             <Erro k="estoque_max" />
           </div>
           <div className="space-y-1.5">
