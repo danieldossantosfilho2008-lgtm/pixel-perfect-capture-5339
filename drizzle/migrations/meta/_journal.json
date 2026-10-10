@@ -8,6 +8,13 @@
       "when": 1791251887944,
       "tag": "0000_estoque_inicial",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791598678451,
+      "tag": "0001_vendas_pedidos",
+      "breakpoints": true
     }
   ]
 }

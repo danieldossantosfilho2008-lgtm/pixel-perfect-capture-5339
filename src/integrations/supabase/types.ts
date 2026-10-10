@@ -178,6 +178,176 @@ export type Database = {
           },
         ]
       }
+      pedido_historico: {
+        Row: {
+          campo: string
+          created_at: string
+          id: string
+          pedido_id: string
+          usuario_id: string | null
+          valor_anterior: string | null
+          valor_novo: string | null
+        }
+        Insert: {
+          campo: string
+          created_at?: string
+          id?: string
+          pedido_id: string
+          usuario_id?: string | null
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Update: {
+          campo?: string
+          created_at?: string
+          id?: string
+          pedido_id?: string
+          usuario_id?: string | null
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedido_historico_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedido_historico_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pedido_itens: {
+        Row: {
+          altura: number | null
+          categoria_codigo: string
+          consumo: number
+          id: string
+          largura: number | null
+          pedido_id: string
+          preco_unitario: number
+          produto_id: string
+          produto_nome: string
+          quantidade: number
+          unidade: string
+        }
+        Insert: {
+          altura?: number | null
+          categoria_codigo: string
+          consumo: number
+          id?: string
+          largura?: number | null
+          pedido_id: string
+          preco_unitario: number
+          produto_id: string
+          produto_nome: string
+          quantidade: number
+          unidade: string
+        }
+        Update: {
+          altura?: number | null
+          categoria_codigo?: string
+          consumo?: number
+          id?: string
+          largura?: number | null
+          pedido_id?: string
+          preco_unitario?: number
+          produto_id?: string
+          produto_nome?: string
+          quantidade?: number
+          unidade?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedido_itens_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pedido_itens_produto_id_fkey"
+            columns: ["produto_id"]
+            isOneToOne: false
+            referencedRelation: "produtos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pedidos: {
+        Row: {
+          chave_idempotencia: string | null
+          cliente_nome: string
+          created_at: string
+          descricao: string | null
+          endereco: string | null
+          id: string
+          metodo_pagamento:
+            | Database["public"]["Enums"]["metodo_pagamento"]
+            | null
+          numero: number
+          preco_limite: number | null
+          preco_real: number | null
+          preco_venda: number | null
+          status: Database["public"]["Enums"]["status_pedido"]
+          updated_at: string
+          valor_cancelamento: number | null
+          vendedor_id: string | null
+        }
+        Insert: {
+          chave_idempotencia?: string | null
+          cliente_nome: string
+          created_at?: string
+          descricao?: string | null
+          endereco?: string | null
+          id?: string
+          metodo_pagamento?:
+            | Database["public"]["Enums"]["metodo_pagamento"]
+            | null
+          numero?: never
+          preco_limite?: number | null
+          preco_real?: number | null
+          preco_venda?: number | null
+          status?: Database["public"]["Enums"]["status_pedido"]
+          updated_at?: string
+          valor_cancelamento?: number | null
+          vendedor_id?: string | null
+        }
+        Update: {
+          chave_idempotencia?: string | null
+          cliente_nome?: string
+          created_at?: string
+          descricao?: string | null
+          endereco?: string | null
+          id?: string
+          metodo_pagamento?:
+            | Database["public"]["Enums"]["metodo_pagamento"]
+            | null
+          numero?: never
+          preco_limite?: number | null
+          preco_real?: number | null
+          preco_venda?: number | null
+          status?: Database["public"]["Enums"]["status_pedido"]
+          updated_at?: string
+          valor_cancelamento?: number | null
+          vendedor_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pedidos_vendedor_id_fkey"
+            columns: ["vendedor_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       produto_atributos: {
         Row: {
           atributo: string
@@ -368,6 +538,45 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _exigir_login: { Args: never; Returns: undefined }
+      _gravar_itens: {
+        Args: { _checar_disponivel: boolean; _itens: Json; _pedido: string }
+        Returns: string
+      }
+      _hist: {
+        Args: { _ant: string; _campo: string; _novo: string; _pedido: string }
+        Returns: undefined
+      }
+      _mov_estoque_pedido: {
+        Args: {
+          _obs: string
+          _pedido: string
+          _produto: string
+          _quantidade: number
+          _tipo: Database["public"]["Enums"]["tipo_movimentacao"]
+        }
+        Returns: number
+      }
+      _sincronizar_estoque: {
+        Args: { _motivo: string; _pedido: string; _zerar: boolean }
+        Returns: undefined
+      }
+      _status_baixa: {
+        Args: { _s: Database["public"]["Enums"]["status_pedido"] }
+        Returns: boolean
+      }
+      _status_usa_venda: {
+        Args: { _s: Database["public"]["Enums"]["status_pedido"] }
+        Returns: boolean
+      }
+      alterar_status_pedido: {
+        Args: {
+          _devolver?: boolean
+          _id: string
+          _status: Database["public"]["Enums"]["status_pedido"]
+        }
+        Returns: undefined
+      }
       alterar_status_produto: {
         Args: {
           _id: string
@@ -375,15 +584,42 @@ export type Database = {
         }
         Returns: undefined
       }
+      atualizar_itens_pedido: {
+        Args: { _id: string; _itens: Json }
+        Returns: undefined
+      }
+      atualizar_pedido: {
+        Args: { _dados: Json; _id: string }
+        Returns: undefined
+      }
       atualizar_produto: {
         Args: { _atributos: Json; _dados: Json; _id: string }
         Returns: undefined
+      }
+      criar_pedido: {
+        Args: { _chave: string; _dados: Json; _itens: Json }
+        Returns: string
       }
       criar_produto: {
         Args: { _atributos: Json; _dados: Json; _quantidade_inicial?: number }
         Returns: string
       }
       exigir_edicao_estoque: { Args: never; Returns: undefined }
+      materiais_disponiveis: {
+        Args: never
+        Returns: {
+          categoria_codigo: string
+          categoria_nome: string
+          cor: string
+          detalhe: string
+          id: string
+          nome: string
+          preco: number
+          quantidade: number
+          tipo: string
+          unidade: string
+        }[]
+      }
       movimentar_estoque: {
         Args: {
           _observacao?: string
@@ -415,13 +651,36 @@ export type Database = {
         Args: { _setor: string; _user: string }
         Returns: Database["public"]["Enums"]["nivel_acesso"]
       }
+      pedido_baixado: {
+        Args: { _pedido: string }
+        Returns: {
+          produto_id: string
+          quantidade: number
+        }[]
+      }
+      pedido_tem_baixa: { Args: { _id: string }; Returns: boolean }
       salvar_atributos: {
         Args: { _atributos: Json; _categoria: string; _produto: string }
         Returns: undefined
       }
     }
     Enums: {
+      metodo_pagamento:
+        | "pix"
+        | "debito"
+        | "credito"
+        | "boleto"
+        | "dinheiro"
+        | "cheque"
       nivel_acesso: "sem_acesso" | "visualizacao" | "edicao"
+      status_pedido:
+        | "orcamento"
+        | "aprovado"
+        | "preparacao"
+        | "finalizado"
+        | "enviado"
+        | "concluido"
+        | "cancelado"
       status_produto: "ativo" | "inativo"
       tipo_conta: "empresarial" | "profissional"
       tipo_movimentacao:
@@ -556,7 +815,24 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      metodo_pagamento: [
+        "pix",
+        "debito",
+        "credito",
+        "boleto",
+        "dinheiro",
+        "cheque",
+      ],
       nivel_acesso: ["sem_acesso", "visualizacao", "edicao"],
+      status_pedido: [
+        "orcamento",
+        "aprovado",
+        "preparacao",
+        "finalizado",
+        "enviado",
+        "concluido",
+        "cancelado",
+      ],
       status_produto: ["ativo", "inativo"],
       tipo_conta: ["empresarial", "profissional"],
       tipo_movimentacao: [
