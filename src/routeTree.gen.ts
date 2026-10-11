@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedVendasRouteImport } from './routes/_authenticated/vendas'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated/estoque/index'
 import { Route as AuthenticatedEstoqueIdRouteImport } from './routes/_authenticated/estoque/$id'
+import { Route as AuthenticatedPedidosIndexRouteImport } from './routes/_authenticated/pedidos/index'
+import { Route as AuthenticatedPedidosIdRouteImport } from './routes/_authenticated/pedidos/$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -46,20 +48,35 @@ const AuthenticatedEstoqueIdRoute = AuthenticatedEstoqueIdRouteImport.update({
   path: '/estoque/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedPedidosIndexRoute =
+  AuthenticatedPedidosIndexRouteImport.update({
+    id: '/pedidos/',
+    path: '/pedidos/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedPedidosIdRoute = AuthenticatedPedidosIdRouteImport.update({
+  id: '/pedidos/$id',
+  path: '/pedidos/$id',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/vendas': typeof AuthenticatedVendasRoute
   '/estoque/$id': typeof AuthenticatedEstoqueIdRoute
+  '/pedidos/$id': typeof AuthenticatedPedidosIdRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/pedidos/': typeof AuthenticatedPedidosIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/vendas': typeof AuthenticatedVendasRoute
   '/estoque/$id': typeof AuthenticatedEstoqueIdRoute
+  '/pedidos/$id': typeof AuthenticatedPedidosIdRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
+  '/pedidos': typeof AuthenticatedPedidosIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -68,13 +85,29 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/vendas': typeof AuthenticatedVendasRoute
   '/_authenticated/estoque/$id': typeof AuthenticatedEstoqueIdRoute
+  '/_authenticated/pedidos/$id': typeof AuthenticatedPedidosIdRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/_authenticated/pedidos/': typeof AuthenticatedPedidosIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/vendas' | '/estoque/$id' | '/estoque/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/vendas'
+    | '/estoque/$id'
+    | '/pedidos/$id'
+    | '/estoque/'
+    | '/pedidos/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/vendas' | '/estoque/$id' | '/estoque'
+  to:
+    | '/'
+    | '/auth'
+    | '/vendas'
+    | '/estoque/$id'
+    | '/pedidos/$id'
+    | '/estoque'
+    | '/pedidos'
   id:
     | '__root__'
     | '/'
@@ -82,7 +115,9 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/vendas'
     | '/_authenticated/estoque/$id'
+    | '/_authenticated/pedidos/$id'
     | '/_authenticated/estoque/'
+    | '/_authenticated/pedidos/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -135,19 +170,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstoqueIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/pedidos/': {
+      id: '/_authenticated/pedidos/'
+      path: '/pedidos'
+      fullPath: '/pedidos/'
+      preLoaderRoute: typeof AuthenticatedPedidosIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/pedidos/$id': {
+      id: '/_authenticated/pedidos/$id'
+      path: '/pedidos/$id'
+      fullPath: '/pedidos/$id'
+      preLoaderRoute: typeof AuthenticatedPedidosIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedVendasRoute: typeof AuthenticatedVendasRoute
   AuthenticatedEstoqueIdRoute: typeof AuthenticatedEstoqueIdRoute
+  AuthenticatedPedidosIdRoute: typeof AuthenticatedPedidosIdRoute
   AuthenticatedEstoqueIndexRoute: typeof AuthenticatedEstoqueIndexRoute
+  AuthenticatedPedidosIndexRoute: typeof AuthenticatedPedidosIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedVendasRoute: AuthenticatedVendasRoute,
   AuthenticatedEstoqueIdRoute: AuthenticatedEstoqueIdRoute,
+  AuthenticatedPedidosIdRoute: AuthenticatedPedidosIdRoute,
   AuthenticatedEstoqueIndexRoute: AuthenticatedEstoqueIndexRoute,
+  AuthenticatedPedidosIndexRoute: AuthenticatedPedidosIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
