@@ -557,6 +557,7 @@ export type Database = {
         }
         Returns: number
       }
+      _n: { Args: { _v: number }; Returns: string }
       _sincronizar_estoque: {
         Args: { _motivo: string; _pedido: string; _zerar: boolean }
         Returns: undefined
