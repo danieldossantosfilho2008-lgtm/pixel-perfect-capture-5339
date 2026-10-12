@@ -17,10 +17,10 @@ export function StatusControl({ pedido }: { pedido: Pedido }) {
 
   async function aplicar(status: StatusPedido, devolver: boolean | null = null) {
     setOcupado(true);
-    const { error } = await supabase.rpc("alterar_status_pedido", { _id: pedido.id, _status: status, _devolver: devolver ?? undefined });
+    const { error } = await supabase.rpc("alterar_status_pedido", devolver == null ? { _id: pedido.id, _status: status } : { _id: pedido.id, _status: status, _devolver: devolver });
     setOcupado(false);
     setPerguntaDevolver(false);
-    if (error) return toast.error(erroMsg(error));
+    if (error) return void toast.error(erroMsg(error));
     toast.success("Status atualizado.");
     ["pedidos", "pedido_historico", "materiais", "produtos"].forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
   }
@@ -28,11 +28,11 @@ export function StatusControl({ pedido }: { pedido: Pedido }) {
   async function escolher(v: string) {
     const novo = v as StatusPedido;
     const bloqueio = bloqueioTransicao(pedido.status, novo, pedido.preco_venda);
-    if (bloqueio) return toast.error(bloqueio);
+    if (bloqueio) return void toast.error(bloqueio);
     if (novo === "cancelado") {
       const { data, error } = await supabase.rpc("pedido_tem_baixa", { _id: pedido.id });
-      if (error) return toast.error(erroMsg(error));
-      if (data) return setPerguntaDevolver(true);
+      if (error) return void toast.error(erroMsg(error));
+      if (data) return void setPerguntaDevolver(true);
     }
     aplicar(novo);
   }

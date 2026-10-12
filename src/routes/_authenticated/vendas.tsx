@@ -35,7 +35,7 @@ function VendasPage() {
   const [precoVenda, setPrecoVenda] = useState("");
   const [pagamento, setPagamento] = useState<MetodoPagamento | "">("");
   const [itens, setItens] = useState<ItemForm[]>([]);
-  const [erros, setErros] = useState<Record<string, string>>({});
+  const [erros, setErros] = useState<Partial<Record<"cliente" | "preco" | "itens", string>>>({});
   const [salvando, setSalvando] = useState(false);
   const chave = useRef(crypto.randomUUID());
 
@@ -46,7 +46,7 @@ function VendasPage() {
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    const er: Record<string, string> = {};
+    const er: Partial<Record<"cliente" | "preco" | "itens", string>> = {};
     if (!cliente.trim()) er.cliente = "Informe o nome completo do cliente.";
     else if (cliente.trim().length > 200) er.cliente = "Nome muito longo.";
     const pv = parseBRL(precoVenda);
@@ -62,7 +62,7 @@ function VendasPage() {
       _chave: chave.current,
     });
     setSalvando(false);
-    if (error) return toast.error(erroMsg(error));
+    if (error) return void toast.error(erroMsg(error));
     toast.success("Venda registrada. Pedido criado em Orçamento.");
     qc.invalidateQueries({ queryKey: ["pedidos"] });
     qc.invalidateQueries({ queryKey: ["materiais"] });
