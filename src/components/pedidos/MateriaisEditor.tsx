@@ -41,7 +41,7 @@ export function validarItens(itens: ItemForm[], materiais: Material[], baixadoPo
   calc.forEach((c) => {
     if (c.erro || !c.material) return;
     const disp = c.material.quantidade + (baixadoPorProduto[c.material.id] ?? 0);
-    if (total[c.material.id] > disp) c.erro = `Estoque insuficiente (disponível ${fmtNum(disp)} ${c.material.unidade})`;
+    if ((total[c.material.id] ?? 0) > disp) c.erro = `Estoque insuficiente (disponível ${fmtNum(disp)} ${c.material.unidade})`;
   });
   return calc;
 }

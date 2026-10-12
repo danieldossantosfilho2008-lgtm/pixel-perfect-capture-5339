@@ -15,6 +15,13 @@
       "when": 1791598678451,
       "tag": "0001_vendas_pedidos",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791765032265,
+      "tag": "0002_fix_formato_numeros_pedido",
+      "breakpoints": true
     }
   ]
 }

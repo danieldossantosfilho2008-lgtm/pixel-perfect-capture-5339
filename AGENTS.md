@@ -17,3 +17,7 @@
 - Category-specific fields live in `categoria_atributos` / `produto_atributos` (EAV), not per-category tables — new categories need only seed rows.
 - `movimentacoes_estoque.origem_tipo/origem_id` reserved for future modules (e.g. a sale generating an automatic exit).
 - Frontend reads/writes via the browser Supabase client (RLS + RPCs); no server functions needed for this module.
+- Orders (`pedidos`, `pedido_itens`, `pedido_historico`) are read-only tables for clients; all writes go through security-definer RPCs that also append history — keeps history immutable and complete.
+- Order stock debits use `_mov_estoque_pedido` with `origem_tipo='pedido'`; the amount already debited is always derived from those movements, which makes debit/return idempotent.
+- Order items snapshot product name, unit and price at sale time — later catalog changes never alter past orders.
+- Price rules (real/limit) live in `src/lib/precos.ts` and return null until official formulas exist — never substitute an invented formula.

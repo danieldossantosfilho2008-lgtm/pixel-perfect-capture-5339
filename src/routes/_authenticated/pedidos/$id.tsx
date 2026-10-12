@@ -66,31 +66,31 @@ function Detalhe({ p }: { p: Pedido }) {
   const invalidar = () => ["pedidos", "pedido_historico", "materiais", "produtos"].forEach((k) => qc.invalidateQueries({ queryKey: [k] }));
 
   async function salvarDados() {
-    if (!cliente.trim()) return toast.error("Informe o nome do cliente.");
+    if (!cliente.trim()) return void toast.error("Informe o nome do cliente.");
     const pv = parseBRL(precoVenda);
-    if (Number.isNaN(pv)) return toast.error("Preço de venda inválido.");
-    if (pv == null && statusUsaPrecoVenda(p.status)) return toast.error("O preço de venda é obrigatório no status atual.");
+    if (Number.isNaN(pv)) return void toast.error("Preço de venda inválido.");
+    if (pv == null && statusUsaPrecoVenda(p.status)) return void toast.error("O preço de venda é obrigatório no status atual.");
     setSalvando(true);
     const { error } = await supabase.rpc("atualizar_pedido", {
       _id: p.id,
       _dados: { cliente_nome: cliente, endereco, descricao, preco_venda: pv, metodo_pagamento: pagamento || null },
     });
     setSalvando(false);
-    if (error) return toast.error(erroMsg(error));
+    if (error) return void toast.error(erroMsg(error));
     toast.success("Pedido atualizado.");
     invalidar();
   }
 
   async function salvarItens() {
-    if (!itens.length) return toast.error("Selecione ao menos um material.");
-    if (validarItens(itens, materiais, baixado).some((c) => c.erro)) return toast.error("Corrija os materiais destacados.");
+    if (!itens.length) return void toast.error("Selecione ao menos um material.");
+    if (validarItens(itens, materiais, baixado).some((c) => c.erro)) return void toast.error("Corrija os materiais destacados.");
     setSalvando(true);
     const { error } = await supabase.rpc("atualizar_itens_pedido", {
       _id: p.id,
       _itens: itens.map((i) => ({ produto_id: i.produto_id, quantidade: i.quantidade.replace(",", "."), largura: i.largura.replace(",", "."), altura: i.altura.replace(",", ".") })),
     });
     setSalvando(false);
-    if (error) return toast.error(erroMsg(error));
+    if (error) return void toast.error(erroMsg(error));
     toast.success("Materiais atualizados.");
     invalidar();
   }
