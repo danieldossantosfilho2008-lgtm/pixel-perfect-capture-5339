@@ -22,6 +22,13 @@
       "when": 1791765032265,
       "tag": "0002_fix_formato_numeros_pedido",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1792806967351,
+      "tag": "0003_administracao_funcionarios",
+      "breakpoints": true
     }
   ]
 }
