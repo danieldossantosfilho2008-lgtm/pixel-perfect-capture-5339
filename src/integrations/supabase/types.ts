@@ -49,21 +49,38 @@ export type Database = {
       }
       cargos: {
         Row: {
+          cor: string
           created_at: string
+          empresa_id: string | null
           id: string
           nome: string
+          tipo: Database["public"]["Enums"]["tipo_cargo"]
         }
         Insert: {
+          cor?: string
           created_at?: string
+          empresa_id?: string | null
           id?: string
           nome: string
+          tipo?: Database["public"]["Enums"]["tipo_cargo"]
         }
         Update: {
+          cor?: string
           created_at?: string
+          empresa_id?: string | null
           id?: string
           nome?: string
+          tipo?: Database["public"]["Enums"]["tipo_cargo"]
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "cargos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       categoria_atributos: {
         Row: {
@@ -120,6 +137,114 @@ export type Database = {
           unidade_medida?: string
         }
         Relationships: []
+      }
+      empresas: {
+        Row: {
+          created_at: string
+          id: string
+          nome: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nome: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nome?: string
+        }
+        Relationships: []
+      }
+      funcionario_dados: {
+        Row: {
+          comissao_percentual: number | null
+          created_at: string
+          created_by: string | null
+          descricao: string | null
+          salario: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          comissao_percentual?: number | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          salario?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          comissao_percentual?: number | null
+          created_at?: string
+          created_by?: string | null
+          descricao?: string | null
+          salario?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funcionario_dados_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "funcionario_dados_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      funcionario_historico: {
+        Row: {
+          campo: string
+          created_at: string
+          funcionario_id: string
+          id: string
+          usuario_id: string | null
+          valor_anterior: string | null
+          valor_novo: string | null
+        }
+        Insert: {
+          campo: string
+          created_at?: string
+          funcionario_id: string
+          id?: string
+          usuario_id?: string | null
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Update: {
+          campo?: string
+          created_at?: string
+          funcionario_id?: string
+          id?: string
+          usuario_id?: string | null
+          valor_anterior?: string | null
+          valor_novo?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "funcionario_historico_funcionario_id_fkey"
+            columns: ["funcionario_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "funcionario_historico_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       movimentacoes_estoque: {
         Row: {
@@ -452,25 +577,31 @@ export type Database = {
       }
       profiles: {
         Row: {
+          ativo: boolean
           cargo_id: string | null
           created_at: string
           email: string | null
+          empresa_id: string | null
           id: string
           nome: string
           tipo_conta: Database["public"]["Enums"]["tipo_conta"]
         }
         Insert: {
+          ativo?: boolean
           cargo_id?: string | null
           created_at?: string
           email?: string | null
+          empresa_id?: string | null
           id: string
           nome?: string
           tipo_conta?: Database["public"]["Enums"]["tipo_conta"]
         }
         Update: {
+          ativo?: boolean
           cargo_id?: string | null
           created_at?: string
           email?: string | null
+          empresa_id?: string | null
           id?: string
           nome?: string
           tipo_conta?: Database["public"]["Enums"]["tipo_conta"]
@@ -481,6 +612,13 @@ export type Database = {
             columns: ["cargo_id"]
             isOneToOne: false
             referencedRelation: "cargos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
         ]
@@ -538,7 +676,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      _exigir_admin: { Args: never; Returns: undefined }
       _exigir_login: { Args: never; Returns: undefined }
+      _fhist: {
+        Args: { _ant: string; _campo: string; _f: string; _novo: string }
+        Returns: undefined
+      }
       _gravar_itens: {
         Args: { _checar_disponivel: boolean; _itens: Json; _pedido: string }
         Returns: string
@@ -585,6 +728,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      atualizar_funcionario: {
+        Args: { _dados: Json; _id: string; _novo?: boolean }
+        Returns: undefined
+      }
       atualizar_itens_pedido: {
         Args: { _id: string; _itens: Json }
         Returns: undefined
@@ -605,6 +752,19 @@ export type Database = {
         Args: { _atributos: Json; _dados: Json; _quantidade_inicial?: number }
         Returns: string
       }
+      definir_permissoes_funcionario: {
+        Args: { _id: string; _perms: Json }
+        Returns: undefined
+      }
+      desempenho_vendedor: {
+        Args: { _fim: string; _id: string; _inicio: string }
+        Returns: {
+          concluido_em: string
+          pedido_id: string
+          preco_venda: number
+        }[]
+      }
+      empresa_padrao: { Args: never; Returns: string }
       exigir_edicao_estoque: { Args: never; Returns: undefined }
       materiais_disponiveis: {
         Args: never
@@ -621,6 +781,7 @@ export type Database = {
           unidade: string
         }[]
       }
+      minha_empresa: { Args: never; Returns: string }
       movimentar_estoque: {
         Args: {
           _observacao?: string
@@ -660,10 +821,17 @@ export type Database = {
         }[]
       }
       pedido_tem_baixa: { Args: { _id: string }; Returns: boolean }
+      pode_administrar: { Args: never; Returns: boolean }
       salvar_atributos: {
         Args: { _atributos: Json; _categoria: string; _produto: string }
         Returns: undefined
       }
+      salvar_cargo: {
+        Args: { _cor: string; _id: string; _nome: string }
+        Returns: string
+      }
+      ve_administracao: { Args: never; Returns: boolean }
+      ve_pedidos: { Args: never; Returns: boolean }
     }
     Enums: {
       metodo_pagamento:
@@ -683,6 +851,7 @@ export type Database = {
         | "concluido"
         | "cancelado"
       status_produto: "ativo" | "inativo"
+      tipo_cargo: "vendedor" | "administrativo" | "financeiro" | "outro"
       tipo_conta: "empresarial" | "profissional"
       tipo_movimentacao:
         | "entrada"
@@ -835,6 +1004,7 @@ export const Constants = {
         "cancelado",
       ],
       status_produto: ["ativo", "inativo"],
+      tipo_cargo: ["vendedor", "administrativo", "financeiro", "outro"],
       tipo_conta: ["empresarial", "profissional"],
       tipo_movimentacao: [
         "entrada",
