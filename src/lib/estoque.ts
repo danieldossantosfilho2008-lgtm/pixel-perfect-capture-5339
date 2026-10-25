@@ -155,10 +155,14 @@ export const acessoQuery = queryOptions({
   queryFn: async () => {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return null;
-    const [{ data: perfil }, { data: nivel }] = await Promise.all([
+    const setores = ["estoque", "vendas", "pedidos", "administracao"] as const;
+    const [{ data: perfil }, ...niv] = await Promise.all([
       supabase.from("profiles").select("nome, email, tipo_conta").eq("id", u.user.id).maybeSingle(),
-      supabase.rpc("nivel_acesso_setor", { _user: u.user.id, _setor: "estoque" }),
+      ...setores.map((s) => supabase.rpc("nivel_acesso_setor", { _user: u.user!.id, _setor: s })),
     ]);
-    return { perfil, nivelEstoque: (nivel ?? "sem_acesso") as NivelAcesso };
+    const niveis = Object.fromEntries(
+      setores.map((s, i) => [s, ((niv[i] as { data: unknown }).data ?? "sem_acesso") as NivelAcesso]),
+    ) as Record<(typeof setores)[number], NivelAcesso>;
+    return { userId: u.user.id, perfil, niveis, nivelEstoque: niveis.estoque };
   },
 });

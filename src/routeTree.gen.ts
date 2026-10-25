@@ -12,6 +12,8 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DefinirSenhaRouteImport } from './routes/definir-senha'
+import { Route as AuthenticatedAdministracaoRouteImport } from './routes/_authenticated/administracao'
 import { Route as AuthenticatedVendasRouteImport } from './routes/_authenticated/vendas'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated/estoque/index'
 import { Route as AuthenticatedEstoqueIdRouteImport } from './routes/_authenticated/estoque/$id'
@@ -32,6 +34,17 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DefinirSenhaRoute = DefinirSenhaRouteImport.update({
+  id: '/definir-senha',
+  path: '/definir-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdministracaoRoute =
+  AuthenticatedAdministracaoRouteImport.update({
+    id: '/administracao',
+    path: '/administracao',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedVendasRoute = AuthenticatedVendasRouteImport.update({
   id: '/vendas',
   path: '/vendas',
@@ -63,6 +76,8 @@ const AuthenticatedPedidosIdRoute = AuthenticatedPedidosIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/definir-senha': typeof DefinirSenhaRoute
+  '/administracao': typeof AuthenticatedAdministracaoRoute
   '/vendas': typeof AuthenticatedVendasRoute
   '/estoque/$id': typeof AuthenticatedEstoqueIdRoute
   '/pedidos/$id': typeof AuthenticatedPedidosIdRoute
@@ -72,6 +87,8 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/definir-senha': typeof DefinirSenhaRoute
+  '/administracao': typeof AuthenticatedAdministracaoRoute
   '/vendas': typeof AuthenticatedVendasRoute
   '/estoque/$id': typeof AuthenticatedEstoqueIdRoute
   '/pedidos/$id': typeof AuthenticatedPedidosIdRoute
@@ -83,6 +100,8 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/definir-senha': typeof DefinirSenhaRoute
+  '/_authenticated/administracao': typeof AuthenticatedAdministracaoRoute
   '/_authenticated/vendas': typeof AuthenticatedVendasRoute
   '/_authenticated/estoque/$id': typeof AuthenticatedEstoqueIdRoute
   '/_authenticated/pedidos/$id': typeof AuthenticatedPedidosIdRoute
@@ -94,6 +113,8 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/definir-senha'
+    | '/administracao'
     | '/vendas'
     | '/estoque/$id'
     | '/pedidos/$id'
@@ -103,6 +124,8 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/definir-senha'
+    | '/administracao'
     | '/vendas'
     | '/estoque/$id'
     | '/pedidos/$id'
@@ -113,6 +136,8 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/definir-senha'
+    | '/_authenticated/administracao'
     | '/_authenticated/vendas'
     | '/_authenticated/estoque/$id'
     | '/_authenticated/pedidos/$id'
@@ -124,6 +149,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  DefinirSenhaRoute: typeof DefinirSenhaRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -148,6 +174,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/definir-senha': {
+      id: '/definir-senha'
+      path: '/definir-senha'
+      fullPath: '/definir-senha'
+      preLoaderRoute: typeof DefinirSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/administracao': {
+      id: '/_authenticated/administracao'
+      path: '/administracao'
+      fullPath: '/administracao'
+      preLoaderRoute: typeof AuthenticatedAdministracaoRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/vendas': {
       id: '/_authenticated/vendas'
@@ -188,6 +228,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdministracaoRoute: typeof AuthenticatedAdministracaoRoute
   AuthenticatedVendasRoute: typeof AuthenticatedVendasRoute
   AuthenticatedEstoqueIdRoute: typeof AuthenticatedEstoqueIdRoute
   AuthenticatedPedidosIdRoute: typeof AuthenticatedPedidosIdRoute
@@ -196,6 +237,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdministracaoRoute: AuthenticatedAdministracaoRoute,
   AuthenticatedVendasRoute: AuthenticatedVendasRoute,
   AuthenticatedEstoqueIdRoute: AuthenticatedEstoqueIdRoute,
   AuthenticatedPedidosIdRoute: AuthenticatedPedidosIdRoute,
@@ -210,6 +252,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  DefinirSenhaRoute: DefinirSenhaRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
