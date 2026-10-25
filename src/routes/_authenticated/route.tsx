@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, LogOut, Package, ShoppingCart } from "lucide-react";
+import { ClipboardList, LogOut, Package, ShoppingCart, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { acessoQuery } from "@/lib/estoque";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,15 @@ function Layout() {
             >
               <ClipboardList className="h-4 w-4" /> Pedidos
             </Link>
+            {acesso && acesso.niveis.administracao !== "sem_acesso" && (
+              <Link
+                to="/administracao"
+                className="flex items-center gap-1.5 rounded px-3 py-1.5 opacity-80 hover:bg-sidebar-accent hover:opacity-100"
+                activeProps={{ className: "bg-sidebar-accent !opacity-100" }}
+              >
+                <Users className="h-4 w-4" /> Administração
+              </Link>
+            )}
           </nav>
           <div className="ml-auto flex items-center gap-3 text-sm">
             {acesso?.perfil && (
