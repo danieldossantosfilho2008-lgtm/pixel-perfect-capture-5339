@@ -19,11 +19,11 @@ export function CargoDialog({ open, onOpenChange, cargo, onSalvo }: {
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    if (!nome.trim()) return toast.error("Informe o nome do cargo");
+    if (!nome.trim()) { toast.error("Informe o nome do cargo"); return; }
     setSalvando(true);
     const { data, error } = await supabase.rpc("salvar_cargo", { _id: cargo?.id ?? (null as unknown as string), _nome: nome, _cor: cor });
     setSalvando(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success(cargo ? "Cargo atualizado" : "Cargo criado");
     await qc.invalidateQueries({ queryKey: ["cargos"] });
     await qc.invalidateQueries({ queryKey: ["funcionarios"] });

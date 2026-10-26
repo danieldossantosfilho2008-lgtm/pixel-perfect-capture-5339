@@ -28,11 +28,11 @@ function DefinirSenha() {
 
   async function salvar(e: React.FormEvent) {
     e.preventDefault();
-    if (senha.length < SENHA_MIN) return toast.error(`A senha deve ter ao menos ${SENHA_MIN} caracteres`);
+    if (senha.length < SENHA_MIN) { toast.error(`A senha deve ter ao menos ${SENHA_MIN} caracteres`); return; }
     setSalvando(true);
     const { error } = await supabase.auth.updateUser({ password: senha });
     setSalvando(false);
-    if (error) return toast.error(error.message.includes("session") ? "Link expirado. Peça um novo convite." : error.message);
+    if (error) { toast.error(error.message.includes("session") ? "Link expirado. Peça um novo convite." : error.message); return; }
     toast.success("Senha definida");
     navigate({ to: "/estoque" });
   }

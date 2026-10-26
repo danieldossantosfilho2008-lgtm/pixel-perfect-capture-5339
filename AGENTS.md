@@ -21,3 +21,8 @@
 - Order stock debits use `_mov_estoque_pedido` with `origem_tipo='pedido'`; the amount already debited is always derived from those movements, which makes debit/return idempotent.
 - Order items snapshot product name, unit and price at sale time — later catalog changes never alter past orders.
 - Price rules (real/limit) live in `src/lib/precos.ts` and return null until official formulas exist — never substitute an invented formula.
+- Company scoping: `profiles.empresa_id`/`cargos.empresa_id` resolved server-side via `minha_empresa()`; never accept a company id from the client — ready for multi-company later.
+- Role meaning comes from `cargos.tipo` (enum), never the display name/color — renaming a role must not change behavior.
+- Page permissions use `nivel_acesso_setor` per sector (estoque, vendas, pedidos, administracao); vendas/pedidos default to edicao when no override, order writes are guarded by triggers on `pedidos`/`pedido_itens`.
+- Sensitive employee data (salary, commission) lives in `funcionario_dados`, readable only by admins and the employee; employee changes go through RPCs that append `funcionario_historico`.
+- Employee invites use a server function (admin check via `pode_administrar`, then admin invite); invited users set their password at `/definir-senha`.
