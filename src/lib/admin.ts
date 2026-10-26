@@ -40,7 +40,7 @@ export const ehVendedor = (c: Pick<Cargo, "tipo"> | null | undefined) => c?.tipo
 export function corTexto(hex: string): "#ffffff" | "#111111" {
   const m = /^#?([0-9a-f]{6})$/i.exec(hex);
   if (!m) return "#111111";
-  const n = parseInt(m[1], 16);
+  const n = parseInt(m[1] ?? "0", 16);
   const lin = (v: number) => {
     const s = v / 255;
     return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
@@ -135,7 +135,7 @@ export const permissoesQuery = (id: string) =>
       const out: Record<string, NivelAcesso> = {};
       res.forEach((r, i) => {
         if (r.error) throw r.error;
-        out[PAGINAS[i].codigo] = (r.data ?? "sem_acesso") as NivelAcesso;
+        out[PAGINAS[i]!.codigo] = (r.data ?? "sem_acesso") as NivelAcesso;
       });
       return out;
     },

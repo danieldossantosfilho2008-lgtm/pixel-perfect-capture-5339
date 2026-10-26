@@ -89,7 +89,7 @@ function Permissoes({ funcionario, podeEditar, proprio }: { funcionario: Funcion
   const q = useQuery(permissoesQuery(funcionario.id));
   const [rascunho, setRascunho] = useState<Record<string, NivelAcesso>>({});
   const [salvando, setSalvando] = useState(false);
-  useEffect(() => { if (q.data) setRascunho(q.data); }, [q.data]);
+  useEffect(() => { if (q.data) setRascunho(q.data); return undefined; }, [q.data]);
   const empresarial = funcionario.tipo_conta === "empresarial";
   const editavel = podeEditar && !empresarial;
   const mudou = q.data && PAGINAS.some((p) => rascunho[p.codigo] !== q.data[p.codigo]);
@@ -98,7 +98,7 @@ function Permissoes({ funcionario, podeEditar, proprio }: { funcionario: Funcion
     setSalvando(true);
     const { error } = await supabase.rpc("definir_permissoes_funcionario", { _id: funcionario.id, _perms: rascunho });
     setSalvando(false);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Permissões salvas");
     qc.invalidateQueries({ queryKey: ["funcionarios", funcionario.id] });
     qc.invalidateQueries({ queryKey: ["acesso"] });
@@ -117,7 +117,7 @@ function Permissoes({ funcionario, podeEditar, proprio }: { funcionario: Funcion
             <div key={p.codigo} className="flex items-center justify-between gap-4 px-3 py-2 text-sm">
               <span>{p.nome}</span>
               {editavel ? (
-                <Select value={rascunho[p.codigo]} onValueChange={(v) => setRascunho((r) => ({ ...r, [p.codigo]: v as NivelAcesso }))}>
+                <Select value={rascunho[p.codigo] ?? "sem_acesso"} onValueChange={(v) => setRascunho((r) => ({ ...r, [p.codigo]: v as NivelAcesso }))}>
                   <SelectTrigger className="h-8 w-40" aria-label={`Acesso a ${p.nome}`}><SelectValue /></SelectTrigger>
                   <SelectContent>{NIVEIS.map((n) => <SelectItem key={n.value} value={n.value}>{n.label}</SelectItem>)}</SelectContent>
                 </Select>

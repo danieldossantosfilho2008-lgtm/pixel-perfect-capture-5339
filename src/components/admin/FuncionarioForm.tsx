@@ -18,7 +18,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const numOuNull = (s: string) => (s.trim() === "" ? null : Number(s.replace(",", ".")));
 
 export function FuncionarioForm({ open, onOpenChange, funcionario, dados }: {
-  open: boolean; onOpenChange: (v: boolean) => void; funcionario?: Funcionario | null; dados?: FuncionarioDados | null;
+  open: boolean; onOpenChange: (v: boolean) => void; funcionario?: Funcionario | null; dados?: FuncionarioDados | null | undefined;
 }) {
   const qc = useQueryClient();
   const convidar = useServerFn(convidarFuncionario);
