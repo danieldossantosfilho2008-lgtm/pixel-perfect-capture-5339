@@ -19,7 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 
 export function FuncionarioDetalhe({ funcionario, onClose, podeEditar, meuId }: {
-  funcionario: Funcionario | null; onClose: () => void; podeEditar: boolean; meuId?: string;
+  funcionario: Funcionario | null; onClose: () => void; podeEditar: boolean; meuId?: string | undefined;
 }) {
   const [editando, setEditando] = useState(false);
   const id = funcionario?.id ?? "";

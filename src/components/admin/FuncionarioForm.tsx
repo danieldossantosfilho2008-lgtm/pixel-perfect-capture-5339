@@ -37,13 +37,13 @@ export function FuncionarioForm({ open, onOpenChange, funcionario, dados }: {
 
   function validar() {
     const e: Record<string, string> = {};
-    if (!nome.trim()) e.nome = "Informe o nome";
-    if (!funcionario && !EMAIL_RE.test(email.trim())) e.email = "E-mail inválido";
-    if (!cargoId) e.cargo = "Selecione o cargo";
+    if (!nome.trim()) e["nome"] = "Informe o nome";
+    if (!funcionario && !EMAIL_RE.test(email.trim())) e["email"] = "E-mail inválido";
+    if (!cargoId) e["cargo"] = "Selecione o cargo";
     const s = numOuNull(salario);
-    if (s != null && (isNaN(s) || s < 0)) e.salario = "Salário inválido";
+    if (s != null && (isNaN(s) || s < 0)) e["salario"] = "Salário inválido";
     const c = numOuNull(comissao);
-    if (vendedor && c != null && (isNaN(c) || c < 0 || c > 100)) e.comissao = "Use um percentual entre 0 e 100";
+    if (vendedor && c != null && (isNaN(c) || c < 0 || c > 100)) e["comissao"] = "Use um percentual entre 0 e 100";
     setErros(e);
     return Object.keys(e).length === 0;
   }
