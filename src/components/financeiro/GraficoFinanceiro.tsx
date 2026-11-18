@@ -1,0 +1,12 @@
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis, Legend } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
+import { Button } from "@/components/ui/button";
+import { ArrowUpRight } from "lucide-react";
+import { fmtBRL } from "@/lib/estoque";
+import type { MesFinanceiro } from "@/lib/financeiro";
+
+const config = { entradas: { label:"Entradas", color:"var(--success)" }, saidas:{ label:"Saídas", color:"var(--destructive)" }, resultado:{label:"Resultado de caixa",color:"var(--chart-1)"}, pedidos:{label:"Pedidos",color:"var(--chart-3)"}, anterior:{label:"Ano anterior",color:"var(--chart-1)"} };
+export function GraficoFinanceiro({ titulo, pontos, campos, onDetalhe, dinheiro=true }: { titulo:string; pontos:(MesFinanceiro & { anterior?:number })[]; campos: (keyof typeof config)[]; onDetalhe: (mes?:string) => void; dinheiro?:boolean }) {
+  const dados = pontos.map(p => ({...p,label:new Date(p.mes + "T12:00:00").toLocaleDateString("pt-BR",{month:"short",year:"2-digit"})}));
+  return <section className="min-w-0 border-t pt-4"><div className="mb-3 flex items-center justify-between gap-2"><h2 className="font-semibold">{titulo}</h2><Button variant="ghost" size="icon" aria-label={`Detalhar ${titulo}`} title={`Detalhar ${titulo}`} onClick={() => onDetalhe()}><ArrowUpRight className="h-4 w-4"/></Button></div>{dados.length ? <ChartContainer className="h-60 w-full aspect-auto" config={config}><BarChart data={dados} accessibilityLayer onClick={s => { const mes = s?.activePayload?.[0]?.payload?.mes; if (typeof mes === "string") onDetalhe(mes); }}><CartesianGrid vertical={false}/><XAxis dataKey="label" tickLine={false} axisLine={false}/><YAxis width={64} tickLine={false} axisLine={false} tickFormatter={v => dinheiro ? Number(v).toLocaleString("pt-BR",{notation:"compact"}) : String(v)} allowDecimals={false}/><ChartTooltip content={<ChartTooltipContent formatter={(v,n) => <span>{config[n as keyof typeof config]?.label}: {dinheiro ? fmtBRL(Number(v)) : Number(v)}</span>}/>}/><Legend/>{campos.map(c => <Bar key={c} dataKey={c} name={config[c].label} fill={`var(--color-${c})`} maxBarSize={44} radius={[3,3,0,0]} isAnimationActive={false}/>)}</BarChart></ChartContainer> : <div className="flex h-60 items-center justify-center text-sm text-muted-foreground">Nenhum registro no período.</div>}</section>;
+}

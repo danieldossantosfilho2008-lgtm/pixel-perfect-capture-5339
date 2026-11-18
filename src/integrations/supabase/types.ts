@@ -156,6 +156,86 @@ export type Database = {
         }
         Relationships: []
       }
+      financeiro_movimentos: {
+        Row: {
+          categoria: string
+          chave: string
+          created_at: string
+          data_movimento: string
+          descricao: string
+          empresa_id: string
+          estorno_de: string | null
+          id: string
+          metodo_pagamento: Database["public"]["Enums"]["metodo_pagamento"]
+          pedido_id: string | null
+          sequencia: number
+          tipo: string
+          usuario_id: string
+          valor: number
+        }
+        Insert: {
+          categoria: string
+          chave: string
+          created_at?: string
+          data_movimento: string
+          descricao: string
+          empresa_id: string
+          estorno_de?: string | null
+          id?: string
+          metodo_pagamento: Database["public"]["Enums"]["metodo_pagamento"]
+          pedido_id?: string | null
+          sequencia?: never
+          tipo: string
+          usuario_id: string
+          valor: number
+        }
+        Update: {
+          categoria?: string
+          chave?: string
+          created_at?: string
+          data_movimento?: string
+          descricao?: string
+          empresa_id?: string
+          estorno_de?: string | null
+          id?: string
+          metodo_pagamento?: Database["public"]["Enums"]["metodo_pagamento"]
+          pedido_id?: string | null
+          sequencia?: never
+          tipo?: string
+          usuario_id?: string
+          valor?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "financeiro_movimentos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financeiro_movimentos_estorno_de_fkey"
+            columns: ["estorno_de"]
+            isOneToOne: false
+            referencedRelation: "financeiro_movimentos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financeiro_movimentos_pedido_id_fkey"
+            columns: ["pedido_id"]
+            isOneToOne: false
+            referencedRelation: "pedidos"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "financeiro_movimentos_usuario_id_fkey"
+            columns: ["usuario_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       funcionario_dados: {
         Row: {
           comissao_percentual: number | null
@@ -411,6 +491,7 @@ export type Database = {
           cliente_nome: string
           created_at: string
           descricao: string | null
+          empresa_id: string | null
           endereco: string | null
           id: string
           metodo_pagamento:
@@ -430,6 +511,7 @@ export type Database = {
           cliente_nome: string
           created_at?: string
           descricao?: string | null
+          empresa_id?: string | null
           endereco?: string | null
           id?: string
           metodo_pagamento?:
@@ -449,6 +531,7 @@ export type Database = {
           cliente_nome?: string
           created_at?: string
           descricao?: string | null
+          empresa_id?: string | null
           endereco?: string | null
           id?: string
           metodo_pagamento?:
@@ -464,6 +547,13 @@ export type Database = {
           vendedor_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "pedidos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "pedidos_vendedor_id_fkey"
             columns: ["vendedor_id"]
@@ -766,6 +856,14 @@ export type Database = {
       }
       empresa_padrao: { Args: never; Returns: string }
       exigir_edicao_estoque: { Args: never; Returns: undefined }
+      financeiro_consultar: {
+        Args: { _area: string; _filtros?: Json }
+        Returns: Json
+      }
+      financeiro_lancar: {
+        Args: { _chave: string; _dados: Json }
+        Returns: string
+      }
       materiais_disponiveis: {
         Args: never
         Returns: {

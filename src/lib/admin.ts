@@ -26,6 +26,7 @@ export const PAGINAS: { codigo: string; nome: string }[] = [
   { codigo: "vendas", nome: "Vendas" },
   { codigo: "pedidos", nome: "Pedidos" },
   { codigo: "administracao", nome: "Administração" },
+  { codigo: "financeiro", nome: "Financeiro" },
 ];
 export const NIVEIS: { value: NivelAcesso; label: string }[] = [
   { value: "sem_acesso", label: "Sem acesso" },

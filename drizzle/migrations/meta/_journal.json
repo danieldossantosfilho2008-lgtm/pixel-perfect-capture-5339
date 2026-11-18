@@ -36,6 +36,13 @@
       "when": 1794960809946,
       "tag": "0004_restringir_leitura_catalogos",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1794963397979,
+      "tag": "0005_financeiro_caixa_recebimentos",
+      "breakpoints": true
     }
   ]
 }

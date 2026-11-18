@@ -1,0 +1,9 @@
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+export const MESES = ["Janeiro","Fevereiro","Março","Abril","Maio","Junho","Julho","Agosto","Setembro","Outubro","Novembro","Dezembro"];
+export function Escolha({ value, onChange, label, options }: { value: string; onChange: (s: string) => void; label: string; options: { value: string; label: string }[] }) {
+  return <Select value={value} onValueChange={onChange}><SelectTrigger aria-label={label} className="w-full sm:w-48"><SelectValue /></SelectTrigger><SelectContent>{options.map(o => <SelectItem key={o.value} value={o.value}>{o.label}</SelectItem>)}</SelectContent></Select>;
+}
+export function PeriodoFinanceiro({ modo, mes, ano, onModo, onMes, onAno, todos = false }: { modo: string; mes: string; ano: string; onModo: (s: string) => void; onMes: (s: string) => void; onAno: (s: string) => void; todos?: boolean }) {
+  return <div className="flex flex-wrap items-center gap-2"><Escolha value={modo} onChange={onModo} label="Período" options={[...(todos ? [{value:"todos",label:"Todo o histórico"}] : []),{value:"mes",label:"Mês atual"},{value:"30",label:"Últimos 30 dias"},{value:"ano",label:"Ano atual"},{value:"especifico",label:"Mês e ano específicos"}]} />{modo === "especifico" && <><Escolha value={mes} onChange={onMes} label="Mês" options={MESES.map((label,i) => ({value:String(i+1),label}))}/><Input type="number" min="1900" max="9999" aria-label="Ano do período" value={ano} onChange={e => onAno(e.target.value)} className="w-28" /></>}</div>;
+}
