@@ -29,6 +29,13 @@
       "when": 1792806967351,
       "tag": "0003_administracao_funcionarios",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1794960809946,
+      "tag": "0004_restringir_leitura_catalogos",
+      "breakpoints": true
     }
   ]
 }
