@@ -14,9 +14,12 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DefinirSenhaRouteImport } from './routes/definir-senha'
 import { Route as AuthenticatedAdministracaoRouteImport } from './routes/_authenticated/administracao'
+import { Route as AuthenticatedFinanceiroRouteRouteImport } from './routes/_authenticated/financeiro/route'
 import { Route as AuthenticatedVendasRouteImport } from './routes/_authenticated/vendas'
 import { Route as AuthenticatedEstoqueIndexRouteImport } from './routes/_authenticated/estoque/index'
 import { Route as AuthenticatedEstoqueIdRouteImport } from './routes/_authenticated/estoque/$id'
+import { Route as AuthenticatedFinanceiroIndexRouteImport } from './routes/_authenticated/financeiro/index'
+import { Route as AuthenticatedFinanceiroControleRouteImport } from './routes/_authenticated/financeiro/controle'
 import { Route as AuthenticatedPedidosIndexRouteImport } from './routes/_authenticated/pedidos/index'
 import { Route as AuthenticatedPedidosIdRouteImport } from './routes/_authenticated/pedidos/$id'
 
@@ -45,6 +48,12 @@ const AuthenticatedAdministracaoRoute =
     path: '/administracao',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedFinanceiroRouteRoute =
+  AuthenticatedFinanceiroRouteRouteImport.update({
+    id: '/financeiro',
+    path: '/financeiro',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedVendasRoute = AuthenticatedVendasRouteImport.update({
   id: '/vendas',
   path: '/vendas',
@@ -61,6 +70,18 @@ const AuthenticatedEstoqueIdRoute = AuthenticatedEstoqueIdRouteImport.update({
   path: '/estoque/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedFinanceiroIndexRoute =
+  AuthenticatedFinanceiroIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedFinanceiroRouteRoute,
+  } as any)
+const AuthenticatedFinanceiroControleRoute =
+  AuthenticatedFinanceiroControleRouteImport.update({
+    id: '/controle',
+    path: '/controle',
+    getParentRoute: () => AuthenticatedFinanceiroRouteRoute,
+  } as any)
 const AuthenticatedPedidosIndexRoute =
   AuthenticatedPedidosIndexRouteImport.update({
     id: '/pedidos/',
@@ -77,11 +98,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/definir-senha': typeof DefinirSenhaRoute
+  '/financeiro': typeof AuthenticatedFinanceiroRouteRouteWithChildren
   '/administracao': typeof AuthenticatedAdministracaoRoute
   '/vendas': typeof AuthenticatedVendasRoute
   '/estoque/$id': typeof AuthenticatedEstoqueIdRoute
+  '/financeiro/controle': typeof AuthenticatedFinanceiroControleRoute
   '/pedidos/$id': typeof AuthenticatedPedidosIdRoute
   '/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/financeiro/': typeof AuthenticatedFinanceiroIndexRoute
   '/pedidos/': typeof AuthenticatedPedidosIndexRoute
 }
 export interface FileRoutesByTo {
@@ -91,8 +115,10 @@ export interface FileRoutesByTo {
   '/administracao': typeof AuthenticatedAdministracaoRoute
   '/vendas': typeof AuthenticatedVendasRoute
   '/estoque/$id': typeof AuthenticatedEstoqueIdRoute
+  '/financeiro/controle': typeof AuthenticatedFinanceiroControleRoute
   '/pedidos/$id': typeof AuthenticatedPedidosIdRoute
   '/estoque': typeof AuthenticatedEstoqueIndexRoute
+  '/financeiro': typeof AuthenticatedFinanceiroIndexRoute
   '/pedidos': typeof AuthenticatedPedidosIndexRoute
 }
 export interface FileRoutesById {
@@ -101,11 +127,14 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/definir-senha': typeof DefinirSenhaRoute
+  '/_authenticated/financeiro': typeof AuthenticatedFinanceiroRouteRouteWithChildren
   '/_authenticated/administracao': typeof AuthenticatedAdministracaoRoute
   '/_authenticated/vendas': typeof AuthenticatedVendasRoute
   '/_authenticated/estoque/$id': typeof AuthenticatedEstoqueIdRoute
+  '/_authenticated/financeiro/controle': typeof AuthenticatedFinanceiroControleRoute
   '/_authenticated/pedidos/$id': typeof AuthenticatedPedidosIdRoute
   '/_authenticated/estoque/': typeof AuthenticatedEstoqueIndexRoute
+  '/_authenticated/financeiro/': typeof AuthenticatedFinanceiroIndexRoute
   '/_authenticated/pedidos/': typeof AuthenticatedPedidosIndexRoute
 }
 export interface FileRouteTypes {
@@ -114,11 +143,14 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/definir-senha'
+    | '/financeiro'
     | '/administracao'
     | '/vendas'
     | '/estoque/$id'
+    | '/financeiro/controle'
     | '/pedidos/$id'
     | '/estoque/'
+    | '/financeiro/'
     | '/pedidos/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -128,8 +160,10 @@ export interface FileRouteTypes {
     | '/administracao'
     | '/vendas'
     | '/estoque/$id'
+    | '/financeiro/controle'
     | '/pedidos/$id'
     | '/estoque'
+    | '/financeiro'
     | '/pedidos'
   id:
     | '__root__'
@@ -137,11 +171,14 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/definir-senha'
+    | '/_authenticated/financeiro'
     | '/_authenticated/administracao'
     | '/_authenticated/vendas'
     | '/_authenticated/estoque/$id'
+    | '/_authenticated/financeiro/controle'
     | '/_authenticated/pedidos/$id'
     | '/_authenticated/estoque/'
+    | '/_authenticated/financeiro/'
     | '/_authenticated/pedidos/'
   fileRoutesById: FileRoutesById
 }
@@ -189,6 +226,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdministracaoRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/financeiro': {
+      id: '/_authenticated/financeiro'
+      path: '/financeiro'
+      fullPath: '/financeiro'
+      preLoaderRoute: typeof AuthenticatedFinanceiroRouteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/vendas': {
       id: '/_authenticated/vendas'
       path: '/vendas'
@@ -210,6 +254,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstoqueIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/financeiro/': {
+      id: '/_authenticated/financeiro/'
+      path: '/'
+      fullPath: '/financeiro/'
+      preLoaderRoute: typeof AuthenticatedFinanceiroIndexRouteImport
+      parentRoute: typeof AuthenticatedFinanceiroRouteRoute
+    }
+    '/_authenticated/financeiro/controle': {
+      id: '/_authenticated/financeiro/controle'
+      path: '/controle'
+      fullPath: '/financeiro/controle'
+      preLoaderRoute: typeof AuthenticatedFinanceiroControleRouteImport
+      parentRoute: typeof AuthenticatedFinanceiroRouteRoute
+    }
     '/_authenticated/pedidos/': {
       id: '/_authenticated/pedidos/'
       path: '/pedidos'
@@ -227,7 +285,24 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedFinanceiroRouteRouteChildren {
+  AuthenticatedFinanceiroControleRoute: typeof AuthenticatedFinanceiroControleRoute
+  AuthenticatedFinanceiroIndexRoute: typeof AuthenticatedFinanceiroIndexRoute
+}
+
+const AuthenticatedFinanceiroRouteRouteChildren: AuthenticatedFinanceiroRouteRouteChildren =
+  {
+    AuthenticatedFinanceiroControleRoute: AuthenticatedFinanceiroControleRoute,
+    AuthenticatedFinanceiroIndexRoute: AuthenticatedFinanceiroIndexRoute,
+  }
+
+const AuthenticatedFinanceiroRouteRouteWithChildren =
+  AuthenticatedFinanceiroRouteRoute._addFileChildren(
+    AuthenticatedFinanceiroRouteRouteChildren,
+  )
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedFinanceiroRouteRoute: typeof AuthenticatedFinanceiroRouteRouteWithChildren
   AuthenticatedAdministracaoRoute: typeof AuthenticatedAdministracaoRoute
   AuthenticatedVendasRoute: typeof AuthenticatedVendasRoute
   AuthenticatedEstoqueIdRoute: typeof AuthenticatedEstoqueIdRoute
@@ -237,6 +312,8 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedFinanceiroRouteRoute:
+    AuthenticatedFinanceiroRouteRouteWithChildren,
   AuthenticatedAdministracaoRoute: AuthenticatedAdministracaoRoute,
   AuthenticatedVendasRoute: AuthenticatedVendasRoute,
   AuthenticatedEstoqueIdRoute: AuthenticatedEstoqueIdRoute,

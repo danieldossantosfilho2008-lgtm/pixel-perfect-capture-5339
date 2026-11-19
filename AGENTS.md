@@ -26,3 +26,5 @@
 - Page permissions use `nivel_acesso_setor` per sector (estoque, vendas, pedidos, administracao); vendas/pedidos default to edicao when no override, order writes are guarded by triggers on `pedidos`/`pedido_itens`.
 - Sensitive employee data (salary, commission) lives in `funcionario_dados`, readable only by admins and the employee; employee changes go through RPCs that append `funcionario_historico`.
 - Employee invites use a server function (admin check via `pode_administrar`, then admin invite); invited users set their password at `/definir-senha`.
+- Finance screens share `PainelFinanceiro` under the authenticated Financeiro layout and use existing browser RPCs; this keeps ledger writes audited without changing order or stock logic.
+- Financial indicators use all-time totals while graphs use bounded periods; this prevents historical ledgers from generating unbounded monthly series.

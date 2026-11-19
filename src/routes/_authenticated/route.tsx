@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ClipboardList, LogOut, Package, ShoppingCart, Users } from "lucide-react";
+import { ClipboardList, LogOut, Package, ShoppingCart, Users, Wallet } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { acessoQuery } from "@/lib/estoque";
 import { Button } from "@/components/ui/button";
@@ -34,11 +34,11 @@ function Layout() {
   return (
     <div className="min-h-screen">
       <header className="border-b border-sidebar-border bg-sidebar text-sidebar-foreground">
-        <div className="mx-auto flex h-14 max-w-[1400px] items-center gap-6 px-4 sm:px-6">
+        <div className="mx-auto flex min-h-14 max-w-[1400px] flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2 sm:px-6">
           <div className="flex items-center gap-2 font-semibold">
             <span className="h-5 w-1.5 rounded-sm bg-highlight" /> Persianas
           </div>
-          <nav className="flex gap-1 text-sm">
+          <nav className="order-3 flex w-full flex-wrap gap-1 text-sm xl:order-none xl:w-auto">
             <Link
               to="/estoque"
               className="flex items-center gap-1.5 rounded px-3 py-1.5 opacity-80 hover:bg-sidebar-accent hover:opacity-100"
@@ -60,6 +60,9 @@ function Layout() {
             >
               <ClipboardList className="h-4 w-4" /> Pedidos
             </Link>
+            {acesso && acesso.niveis.financeiro !== "sem_acesso" && (
+              <Link to="/financeiro" className="flex items-center gap-1.5 rounded px-3 py-1.5 opacity-80 hover:bg-sidebar-accent hover:opacity-100" activeProps={{ className: "bg-sidebar-accent !opacity-100" }}><Wallet className="h-4 w-4" /> Financeiro</Link>
+            )}
             {acesso && acesso.niveis.administracao !== "sem_acesso" && (
               <Link
                 to="/administracao"

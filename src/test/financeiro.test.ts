@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { aceitaRecebimento, pendenciaFinanceira, resultadoCaixa, valorMaterial, periodoFinanceiro } from "@/lib/financeiro";
+import { aceitaRecebimento, pendenciaFinanceira, resultadoCaixa, valorMaterial, periodoFinanceiro, validarLancamento, type PedidoFinanceiro } from "@/lib/financeiro";
+const pedido: PedidoFinanceiro = { id:"pedido", numero:1, cliente_nome:"Teste", created_at:"2026-11-19", status:"aprovado", valor_total:150, pago:40, pendente:110, status_pagamento:"parcial", metodos:["pix"] };
 describe("regras financeiras aprovadas", () => {
   it("resultado é recebimento efetivo menos saída", () => expect(resultadoCaixa(150,40)).toBe(110));
   it("pagamento parcial reduz pendência", () => expect(pendenciaFinanceira("aprovado",150,40)).toBe(110));
@@ -10,4 +11,13 @@ describe("regras financeiras aprovadas", () => {
   it("aprovado pode receber pagamentos", () => expect(aceitaRecebimento("aprovado")).toBe(true));
   it("materiais usam preço histórico vezes consumo", () => expect(valorMaterial(10,6)).toBe(60));
   it("últimos 30 dias incluem o dia atual", () => expect(periodoFinanceiro("30","11","2026","2026-11-18")).toEqual({ inicio:"2026-10-20", fim:"2026-11-18" }));
+  it("aceita novo recebimento parcial de 30 sobre pendência de 110", () => expect(validarLancamento(30,pedido)).toBeNull());
+  it("bloqueia pagamento de 111 sobre pendência de 110", () => expect(validarLancamento(111,pedido)).toBe("Pagamento excede o valor pendente."));
+  it("permite quitar os 110 restantes", () => expect(validarLancamento(110,pedido)).toBeNull());
+  it("cancelado não pode receber", () => expect(validarLancamento(10,{...pedido,status:"cancelado"})).toBe("Este pedido não pode receber pagamentos."));
+  it("preço não informado não vira cobrança zero", () => expect(pendenciaFinanceira("aprovado",null,0)).toBeNull());
+  it("despesa de 40 reduz caixa de 150 para 110", () => expect(resultadoCaixa(150,40)).toBe(110));
+  it("estorno de despesa de 10 retorna dinheiro ao caixa", () => expect(resultadoCaixa(150+10,40)).toBe(120));
+  it("despesa negativa é bloqueada", () => expect(validarLancamento(-40)).toBe("Informe um valor positivo."));
+  it("ano incompleto não produz data inválida", () => expect(periodoFinanceiro("especifico","11","2")).toEqual({inicio:"",fim:""}));
 });

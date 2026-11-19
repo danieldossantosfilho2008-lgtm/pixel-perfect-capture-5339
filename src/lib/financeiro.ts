@@ -7,7 +7,7 @@ export interface FiltrosFinanceiros { inicio?: string; fim?: string; busca?: str
 export interface MesFinanceiro { mes: string; entradas: number; saidas: number; resultado: number; pedidos: number }
 export interface DashboardFinanceiro { caixa: number; receber: number; meses: MesFinanceiro[] }
 export interface MovimentoFinanceiro { id: string; tipo: "entrada" | "saida"; valor: number; descricao: string; categoria: string; metodo_pagamento: MetodoPagamento; data_movimento: string; saldo: number; responsavel: string; pedido_id: string | null; estorno_de: string | null }
-export interface PedidoFinanceiro { id: string; numero: number; cliente_nome: string; created_at: string; status: StatusPedido; valor_total: number | null; pago: number; pendente: number; status_pagamento: string; metodos: MetodoPagamento[] }
+export interface PedidoFinanceiro { id: string; numero: number; cliente_nome: string; created_at: string; status: StatusPedido; valor_total: number | null; pago: number; pendente: number | null; status_pagamento: string; metodos: MetodoPagamento[] }
 export interface ProdutoFinanceiro { produto_id: string; produto_nome: string; unidade: string; quantidade: number; valor: number; pedidos: number; primeira: string; ultima: string }
 export interface PaginaFinanceira<T> { total: number; itens: T[] }
 export const STATUS_FINANCEIROS = [{ value: "nao_pago", label: "Não pago" }, { value: "parcial", label: "Parcial" }, { value: "pago", label: "Pago" }, { value: "orcamento", label: "Orçamento" }, { value: "cancelado", label: "Cancelado" }];
@@ -19,13 +19,25 @@ export function pendenciaFinanceira(status: StatusPedido, total: number | null, 
 export const resultadoCaixa = (entradas: number, saidas: number) => Math.round((entradas - saidas) * 100) / 100;
 export const valorMaterial = (preco: number, consumo: number) => preco * consumo;
 export const aceitaRecebimento = (status: StatusPedido) => !["orcamento", "cancelado"].includes(status);
+export function validarLancamento(valor: number | null, pedido?: PedidoFinanceiro): string | null {
+  if (valor == null || !Number.isFinite(valor) || valor <= 0) return "Informe um valor positivo.";
+  if (pedido && (!aceitaRecebimento(pedido.status) || pedido.valor_total == null || pedido.pendente == null)) return "Este pedido não pode receber pagamentos.";
+  if (pedido && valor > (pedido.pendente ?? 0)) return "Pagamento excede o valor pendente.";
+  return null;
+}
+export function periodoValido(inicio: string, fim: string) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(inicio) && /^\d{4}-\d{2}-\d{2}$/.test(fim) && inicio <= fim;
+}
 export function diaBrasil(d = new Date()) { return new Intl.DateTimeFormat("sv-SE", { timeZone: "America/Sao_Paulo" }).format(d); }
 export function periodoFinanceiro(modo: string, mes: string, ano: string, hoje = diaBrasil()) {
   const y = Number(ano), m = Number(mes);
   if (modo === "todos") return { inicio: "1900-01-01", fim: hoje };
   if (modo === "30") { const d = new Date(hoje + "T12:00:00Z"); d.setUTCDate(d.getUTCDate() - 29); return { inicio: d.toISOString().slice(0, 10), fim: hoje }; }
   if (modo === "ano") return { inicio: `${hoje.slice(0,4)}-01-01`, fim: hoje };
-  if (modo === "especifico") return { inicio: `${y}-${String(m).padStart(2,"0")}-01`, fim: new Date(Date.UTC(y,m,0)).toISOString().slice(0,10) };
+  if (modo === "especifico") {
+    if (!Number.isInteger(y) || y < 1900 || y > 9999 || !Number.isInteger(m) || m < 1 || m > 12) return { inicio: "", fim: "" };
+    return { inicio: `${y}-${String(m).padStart(2,"0")}-01`, fim: new Date(Date.UTC(y,m,0)).toISOString().slice(0,10) };
+  }
   return { inicio: hoje.slice(0,7) + "-01", fim: hoje };
 }
 export async function consultarFinanceiro<T>(area: string, filtros: FiltrosFinanceiros): Promise<T> {
