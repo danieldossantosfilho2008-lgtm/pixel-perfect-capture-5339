@@ -117,6 +117,7 @@ export type Database = {
       categorias: {
         Row: {
           codigo: string
+          empresa_id: string
           id: string
           nome: string
           ordem: number
@@ -124,6 +125,7 @@ export type Database = {
         }
         Insert: {
           codigo: string
+          empresa_id: string
           id?: string
           nome: string
           ordem?: number
@@ -131,12 +133,21 @@ export type Database = {
         }
         Update: {
           codigo?: string
+          empresa_id?: string
           id?: string
           nome?: string
           ordem?: number
           unidade_medida?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "categorias_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       empresas: {
         Row: {
@@ -491,7 +502,7 @@ export type Database = {
           cliente_nome: string
           created_at: string
           descricao: string | null
-          empresa_id: string | null
+          empresa_id: string
           endereco: string | null
           id: string
           metodo_pagamento:
@@ -511,7 +522,7 @@ export type Database = {
           cliente_nome: string
           created_at?: string
           descricao?: string | null
-          empresa_id?: string | null
+          empresa_id: string
           endereco?: string | null
           id?: string
           metodo_pagamento?:
@@ -531,7 +542,7 @@ export type Database = {
           cliente_nome?: string
           created_at?: string
           descricao?: string | null
-          empresa_id?: string | null
+          empresa_id?: string
           endereco?: string | null
           id?: string
           metodo_pagamento?:
@@ -596,6 +607,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           descricao: string | null
+          empresa_id: string
           estoque_max: number | null
           estoque_min: number | null
           id: string
@@ -613,6 +625,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descricao?: string | null
+          empresa_id: string
           estoque_max?: number | null
           estoque_min?: number | null
           id?: string
@@ -630,6 +643,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           descricao?: string | null
+          empresa_id?: string
           estoque_max?: number | null
           estoque_min?: number | null
           id?: string
@@ -654,6 +668,13 @@ export type Database = {
             columns: ["created_by"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "produtos_empresa_id_fkey"
+            columns: ["empresa_id"]
+            isOneToOne: false
+            referencedRelation: "empresas"
             referencedColumns: ["id"]
           },
           {
@@ -791,6 +812,7 @@ export type Database = {
         Returns: number
       }
       _n: { Args: { _v: number }; Returns: string }
+      _preparar_empresa: { Args: { _emp: string }; Returns: undefined }
       _sincronizar_estoque: {
         Args: { _motivo: string; _pedido: string; _zerar: boolean }
         Returns: undefined
@@ -930,6 +952,10 @@ export type Database = {
       }
       ve_administracao: { Args: never; Returns: boolean }
       ve_pedidos: { Args: never; Returns: boolean }
+      vincular_convite: {
+        Args: { _empresa: string; _user: string }
+        Returns: undefined
+      }
     }
     Enums: {
       metodo_pagamento:

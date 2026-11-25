@@ -24,6 +24,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const [modo, setModo] = useState<"entrar" | "cadastrar">("entrar");
   const [nome, setNome] = useState("");
+  const [empresa, setEmpresa] = useState("");
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
   const [carregando, setCarregando] = useState(false);
@@ -40,11 +41,11 @@ function AuthPage() {
         const { data, error } = await supabase.auth.signUp({
           email,
           password: senha,
-          options: { emailRedirectTo: window.location.origin, data: { nome } },
+          options: { emailRedirectTo: window.location.origin, data: { nome: nome.trim(), empresa_nome: empresa.trim() } },
         });
         if (error) throw error;
         if (data.session) navigate({ to: "/estoque" });
-        else toast.success("Cadastro feito! Confirme pelo link enviado ao seu e-mail.");
+        else toast.success("Empresa cadastrada! Confirme pelo link enviado ao seu e-mail.");
       }
     } catch (err) {
       const m = (err as Error).message;
@@ -71,16 +72,22 @@ function AuthPage() {
       <div className="flex items-center justify-center p-6">
         <form onSubmit={enviar} className="w-full max-w-sm space-y-5">
           <div>
-            <h2 className="text-2xl font-semibold">{modo === "entrar" ? "Entrar" : "Criar conta"}</h2>
+            <h2 className="text-2xl font-semibold">{modo === "entrar" ? "Entrar" : "Cadastrar empresa"}</h2>
             <p className="mt-1 text-sm text-muted-foreground">
-              {modo === "entrar" ? "Use seu e-mail corporativo." : "O primeiro cadastro recebe acesso Empresarial."}
+              {modo === "entrar" ? "Use seu e-mail corporativo." : "Crie a conta da sua empresa. Você será o administrador. Funcionários entram por convite."}
             </p>
           </div>
           {modo === "cadastrar" && (
-            <div className="space-y-1.5">
-              <Label htmlFor="nome">Nome</Label>
-              <Input id="nome" required value={nome} onChange={(e) => setNome(e.target.value)} />
-            </div>
+            <>
+              <div className="space-y-1.5">
+                <Label htmlFor="empresa">Nome da empresa</Label>
+                <Input id="empresa" required maxLength={120} value={empresa} onChange={(e) => setEmpresa(e.target.value)} />
+              </div>
+              <div className="space-y-1.5">
+                <Label htmlFor="nome">Seu nome</Label>
+                <Input id="nome" required maxLength={120} value={nome} onChange={(e) => setNome(e.target.value)} />
+              </div>
+            </>
           )}
           <div className="space-y-1.5">
             <Label htmlFor="email">E-mail</Label>
@@ -92,14 +99,14 @@ function AuthPage() {
             {modo === "cadastrar" && <PasswordStrength senha={senha} />}
           </div>
           <Button type="submit" className="w-full" disabled={carregando}>
-            {carregando ? "Aguarde..." : modo === "entrar" ? "Entrar" : "Cadastrar"}
+            {carregando ? "Aguarde..." : modo === "entrar" ? "Entrar" : "Cadastrar empresa"}
           </Button>
           <button
             type="button"
             className="w-full text-sm text-muted-foreground hover:text-foreground"
             onClick={() => setModo(modo === "entrar" ? "cadastrar" : "entrar")}
           >
-            {modo === "entrar" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}
+            {modo === "entrar" ? "Nova empresa? Cadastre-se" : "Já tem conta? Entrar"}
           </button>
         </form>
       </div>

@@ -77,6 +77,7 @@ function Layout() {
             {acesso?.perfil && (
               <div className="hidden text-right leading-tight sm:block">
                 <div>{acesso.perfil.nome}</div>
+                {acesso.perfil.empresa && <div className="text-xs opacity-70">{acesso.perfil.empresa.nome}</div>}
                 <div className="font-mono text-[10px] uppercase tracking-wider text-sidebar-primary">
                   {acesso.perfil.tipo_conta}
                 </div>
@@ -103,7 +104,14 @@ function Layout() {
         </div>
       </header>
       <main className="mx-auto max-w-[1400px] px-4 py-6 sm:px-6">
-        <Outlet />
+        {acesso?.perfil && !acesso.perfil.empresa_id ? (
+          <div className="mx-auto max-w-md rounded-lg border bg-card p-6 text-center">
+            <h1 className="text-lg font-semibold">Conta sem empresa</h1>
+            <p className="mt-2 text-sm text-muted-foreground">Sua conta não está vinculada a nenhuma empresa. Peça um convite ao administrador da sua empresa.</p>
+          </div>
+        ) : (
+          <Outlet />
+        )}
       </main>
     </div>
   );

@@ -19,6 +19,8 @@ export const convidarFuncionario = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { data: pode, error: ePode } = await context.supabase.rpc("pode_administrar");
     if (ePode || !pode) throw new Error("Sem permissão para administrar funcionários");
+    const { data: empresa, error: eEmp } = await context.supabase.rpc("minha_empresa");
+    if (eEmp || !empresa) throw new Error("Sua conta não está vinculada a uma empresa");
 
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: conv, error } = await supabaseAdmin.auth.admin.inviteUserByEmail(data.email, {
@@ -30,6 +32,9 @@ export const convidarFuncionario = createServerFn({ method: "POST" })
       if (/already|registered|exists/i.test(m)) throw new Error("Já existe um usuário com este e-mail");
       throw new Error(m || "Não foi possível enviar o convite");
     }
+    // Vincula o convidado somente à empresa de quem convidou; recusa quem já pertence a uma empresa.
+    const { error: eVinc } = await supabaseAdmin.rpc("vincular_convite", { _user: conv.user.id, _empresa: empresa });
+    if (eVinc) throw new Error(eVinc.message);
     const { error: eUpd } = await context.supabase.rpc("atualizar_funcionario", {
       _id: conv.user.id,
       _novo: true,

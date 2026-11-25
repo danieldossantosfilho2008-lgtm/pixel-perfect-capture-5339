@@ -157,7 +157,7 @@ export const acessoQuery = queryOptions({
     if (!u.user) return null;
     const setores = ["estoque", "vendas", "pedidos", "administracao", "financeiro"] as const;
     const [{ data: perfil }, ...niv] = await Promise.all([
-      supabase.from("profiles").select("nome, email, tipo_conta").eq("id", u.user.id).maybeSingle(),
+      supabase.from("profiles").select("nome, email, tipo_conta, empresa_id, empresa:empresas(nome)").eq("id", u.user.id).maybeSingle(),
       ...setores.map((s) => supabase.rpc("nivel_acesso_setor", { _user: u.user!.id, _setor: s })),
     ]);
     const niveis = Object.fromEntries(

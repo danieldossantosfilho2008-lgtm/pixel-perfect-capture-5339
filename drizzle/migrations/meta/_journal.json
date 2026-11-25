@@ -43,6 +43,13 @@
       "when": 1794963397979,
       "tag": "0005_financeiro_caixa_recebimentos",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795577757763,
+      "tag": "0006_multiempresa_isolamento",
+      "breakpoints": true
     }
   ]
 }
